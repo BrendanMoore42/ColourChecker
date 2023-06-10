@@ -93,7 +93,7 @@ class CChecker:
         plt.axis("off")
 
         if self.save_image:
-            plt.savefig(f"{self.image}_analysis.png")
+            plt.savefig(f"output/{self.image}_analysis.png")
         else:
             plt.show()
 
@@ -133,8 +133,8 @@ class CChecker:
 """ Example: Colloquially referred to as "Blue"and "Red" within the SSBM community, we run an analysis on the two jackets
 to find they are in truth Lavender and Orange """
 
-input_image = "fox_jacket1.png"
-input_image = "fox_jacket2.png"
+input_image = "input/fox_jacket1.png"
+input_image = "input/fox_jacket2.png"
 
 # Set up checker, analyze
 CC = CChecker(input_image, n_clusters=5, save_image=True)
