@@ -1,19 +1,18 @@
 """
-Colour Checker
-KMeans cluster analysis to grab percentages, hex codes and names of colours in a given
-image. Simply put any image you'd like to check through the script and see what it says.
+KMeans Colour Checker
+KMeans cluster analysis to grab the percentages, hex codes and names of colours in a given
+image. Simply put any image you'd like to check through the script.
 author: brendanmoore42@github.com
 date: June 2023
 """
 import cv2
 import requests
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-from skimage import io
 from sklearn.cluster import KMeans
+
 
 # Main Colour Checker class
 class CChecker:
@@ -24,10 +23,11 @@ class CChecker:
         self.save_image = save_image
 
     def analyze_image(self):
-        # Run the analysis and output plot
-        _, colours = self.run_Kmeans()
-        hex_colours = self.fetch_colours(colours)
-        self.plot_colours(hex_colours)
+        # Run the analysis and output cluster information
+        _, colours = self.run_kmeans()
+        hex_colours = self.fetch_colours(colours)[::-1]  # grab colour names, reverse for plotting
+        percents = colours[::-1]  # reverse for plotting
+        self.plot_colours(hex_colours, percents)  # plot data
 
     def colour_name(self, hex_code):
         try:  # search color-name.com for match
@@ -55,31 +55,31 @@ class CChecker:
 
         return hex_colours
 
-    def plot_colours(self, colours):
+    def plot_colours(self, hex_colours, percents):
         # Create figure, axes
-        fig = plt.figure(figsize=[5, 5])
+        fig = plt.figure(figsize=[6, 6])
         ax = fig.add_subplot(111)
 
         # Create rectangles to add to fig
-        rect_0 = Rectangle((0, 0), 200, 200, color=colours[0])
-        ax.text(66, 100, colours[0])
-        temp_name = self.colour_name(colours[0])
-        ax.text(66, 80, temp_name)
+        rect_0 = Rectangle((0, 0), 200, 200, color=hex_colours[0])
+        ax.text(55, 100, hex_colours[0]+" "+(str(round(percents[0][0]*100, 2)))+"%")
+        temp_name = self.colour_name(hex_colours[0])
+        ax.text(55, 80, temp_name)
 
-        rect_1 = Rectangle((0, 0), 200, -200, color=colours[1])
-        ax.text(66, -100, colours[1])
-        temp_name = self.colour_name(colours[1])
-        ax.text(66, -120, temp_name)
+        rect_1 = Rectangle((0, 0), 200, -200, color=hex_colours[1])
+        ax.text(55, -100, hex_colours[1]+" "+(str(round(percents[1][0]*100, 2)))+"%")
+        temp_name = self.colour_name(hex_colours[1])
+        ax.text(55, -120, temp_name)
 
-        rect_2 = Rectangle((0, 0), -200, 200, color=colours[2])
-        ax.text(-132, 100, colours[2])
-        temp_name = self.colour_name(colours[2])
-        ax.text(-132, 80, temp_name)
+        rect_2 = Rectangle((0, 0), -200, 200, color=hex_colours[2])
+        ax.text(-142, 100, hex_colours[2]+" "+(str(round(percents[2][0]*100, 2)))+"%")
+        temp_name = self.colour_name(hex_colours[2])
+        ax.text(-142, 80, temp_name)
 
-        rect_3 = Rectangle((0, 0), -200, -200, color=colours[3])
-        ax.text(-132, -100, colours[3])
-        temp_name = self.colour_name(colours[3])
-        ax.text(-132, -120, temp_name)
+        rect_3 = Rectangle((0, 0), -200, -200, color=hex_colours[3])
+        ax.text(-142, -100, hex_colours[3]+" "+(str(round(percents[3][0]*100, 2)))+"%")
+        temp_name = self.colour_name(hex_colours[3])
+        ax.text(-142, -120, temp_name)
 
         # Add rectangles to fig
         ax.add_patch(rect_0)
@@ -93,14 +93,15 @@ class CChecker:
         plt.axis("off")
 
         if self.save_image:
-            plt.savefig(f"output/{self.image}_analysis.png")
+            title = self.image.split("input/")[1].split(".")[0]
+            plt.savefig(f"output/{title}_analysis.png")
         else:
             plt.show()
 
     def rgb_to_hex(self, rgb):
         return "#" + "%02x%02x%02x" % rgb
 
-    def run_Kmeans(self):
+    def run_kmeans(self):
         image = cv2.imread(self.image)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         reshape = image.reshape((image.shape[0] * image.shape[1], 3))
@@ -130,11 +131,8 @@ class CChecker:
         return rect, colours
 
 
-""" Example: Colloquially referred to as "Blue"and "Red" within the SSBM community, we run an analysis on the two jackets
-to find they are in truth Lavender and Orange """
-
-input_image = "input/fox_jacket1.png"
-input_image = "input/fox_jacket2.png"
+# Example use
+input_image = "input/The_dress_blueblackwhitegold.jpeg"
 
 # Set up checker, analyze
 CC = CChecker(input_image, n_clusters=5, save_image=True)
