@@ -12,6 +12,7 @@ Using KMeans Clustering algorithm we group and look at the percentages and names
 ### Verdict
 Running this picture through the algorithm, we get the top four colours as presented:
 <img src="output/The_dress_blueblackwhitegold_analysis.png" alt="Dress Results" width="500">
+
 Clearly demonstrating not only is the dress not Blue & Black, it is also not Gold & White, but predominately Olive Drab Camoflage & Cool Grey.
 
 ### Example #2: SSBM Fox Jacket Colours
@@ -20,4 +21,5 @@ Colloquially referred to as Blue and Red within the SSBM community, we run an an
 ### Verdict
 Running this picture through the algorithm, and doing some Photoshop to combine the results, we see:
 <img src="output/fox_jacket_analysis.png" alt="Dress Results" width="500">
+
 Proving definitively the colours are Purple/Lavender and Orange.
